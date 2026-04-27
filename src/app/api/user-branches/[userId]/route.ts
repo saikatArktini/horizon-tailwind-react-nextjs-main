@@ -67,13 +67,14 @@ import { prisma } from "lib/prisma";
 */
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
+    const { userId } = await params;
     const authUser = requireAuth(req);
     if (!authUser) throw new Error("Unauthorized");
 
-    const targetUserId = Number(params.userId);
+    const targetUserId = Number(userId);
 
     if (
       authUser.role !== "Super-Admin" &&
