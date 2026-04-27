@@ -2,7 +2,7 @@ import { ApexOptions } from 'apexcharts';
 
 type ApexGeneric = ApexOptions & any;
 
-export const barChartDataFDvsRD: ApexAxisChartSeries = [
+export const barChartDataFDvsRD: any[] = [
   {
     name: 'Accounts',
     data: [120, 95, 210, 60], // FD, RD, SB, MIS
@@ -305,5 +305,93 @@ export const lineChartOptionsTotalSpent = {
 
   yaxis: {
     show: false,
+  },
+};
+
+export const barChartDataDailyTraffic = [
+  {
+    name: 'Daily Traffic',
+    data: [20, 30, 40, 20, 45, 50, 30],
+  },
+];
+
+export const barChartOptionsDailyTraffic: ApexGeneric = {
+  chart: {
+    toolbar: {
+      show: false,
+    },
+  },
+  tooltip: {
+    style: {
+      fontSize: '12px',
+      fontFamily: undefined,
+      backgroundColor: '#000000',
+    },
+    theme: 'dark',
+  },
+  xaxis: {
+    categories: ['00', '04', '08', '12', '14', '16', '18'],
+    show: false,
+    labels: {
+      show: true,
+      style: {
+        colors: '#A3AED0',
+        fontSize: '14px',
+        fontWeight: '500',
+      },
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+  },
+  yaxis: {
+    show: false,
+    color: 'black',
+    labels: {
+      show: false,
+      style: {
+        colors: '#A3AED0',
+        fontSize: '14px',
+        fontWeight: '500',
+      },
+    },
+  },
+  grid: {
+    borderColor: 'rgba(163, 174, 208, 0.3)',
+    show: true,
+    yaxis: {
+      lines: {
+        show: false,
+        opacity: 0.5,
+      },
+    },
+    row: {
+      opacity: 0.5,
+    },
+    xaxis: {
+      lines: {
+        show: false,
+      },
+    },
+  },
+  fill: {
+    type: 'solid',
+    colors: ['#4318FF'],
+  },
+  legend: {
+    show: false,
+  },
+  colors: ['#4318FF'],
+  dataLabels: {
+    enabled: false,
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 10,
+      columnWidth: '20px',
+    },
   },
 };

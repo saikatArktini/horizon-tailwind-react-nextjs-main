@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "lib/prisma";
 import { requireAuth } from "app/middleware/requireAuth";
 
-type Params = { params: { id: string } };
+type Params = { params: Promise<{ id: string }> };
 
 /**
  * @swagger

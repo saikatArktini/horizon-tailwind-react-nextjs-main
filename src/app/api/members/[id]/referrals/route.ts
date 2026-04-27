@@ -4,7 +4,7 @@ import { prisma } from "lib/prisma";
 import { NextResponse } from "next/server";
 //import { prisma } from "@/lib/prisma";
 
-type Params = { params: { id: string } };
+type Params = { params: Promise<{ id: string }> };
 
 
 /**
