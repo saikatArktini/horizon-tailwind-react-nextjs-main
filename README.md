@@ -73,7 +73,7 @@ Horizon UI Banking System is designed for financial institutions and microfinanc
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/saika/horizon-tailwind-react-nextjs-main.git
+   git clone https://github.com/saikatArktini/horizon-tailwind-react-nextjs-main.git
    ```
 
 2. **Install dependencies**:
