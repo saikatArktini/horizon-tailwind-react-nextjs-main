@@ -1,0 +1,349 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  permissions RolePermission[]
+  users       User[]
+}
+
+model Permission {
+  id    Int              @id @default(autoincrement())
+  code  String           @unique
+  roles RolePermission[]
+}
+
+model RolePermission {
+  id           Int        @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model User {
+  id                           Int                   @id @default(autoincrement())
+  username                     String                @unique
+  password                     String
+  isActive                     Boolean               @default(true)
+  roleId                       Int
+  createdAt                    DateTime              @default(now())
+  verifiedAccountVerifications AccountVerification[]
+  branches                     Branch[]              @relation("BranchCreatedBy")
+  createdMembers               Member[]              @relation("MemberCreatedBy")
+  memberProfile                Member?               @relation("UserMemberLogin")
+  role                         Role                  @relation(fields: [roleId], references: [id])
+  userBranches                 UserBranch[]
+}
+
+model Country {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  branches Branch[]
+  states   State[]
+}
+
+model State {
+  id        Int      @id @default(autoincrement())
+  name      String
+  countryId Int
+  branches  Branch[]
+  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+}
+
+model BranchLevel {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  branches Branch[]
+}
+
+model Branch {
+  id                       Int                       @id @default(autoincrement())
+  branchName               String
+  branchCode               String                    @unique
+  city                     String
+  address                  String
+  branchLevelId            Int
+  countryId                Int
+  stateId                  Int
+  geoFencingEnabled        Boolean                   @default(false)
+  createdByUserId          Int
+  createdAt                DateTime                  @default(now())
+  accountVerifications     AccountVerification[]
+  branchLevel              BranchLevel               @relation(fields: [branchLevelId], references: [id])
+  country                  Country                   @relation(fields: [countryId], references: [id])
+  createdBy                User                      @relation("BranchCreatedBy", fields: [createdByUserId], references: [id])
+  state                    State                     @relation(fields: [stateId], references: [id])
+  currentAccounts          CurrentAccount[]
+  fixedDepositAccounts     FixedDepositAccount[]
+  loanAccounts             LoanAccount[]
+  misAccounts              MISAccount[]
+  members                  Member[]
+  recurringDepositAccounts RecurringDepositAccount[]
+  savingsAccounts          SavingsAccount[]
+  userBranches             UserBranch[]
+  zoneId Int?
+  zone   Zone? @relation(fields: [zoneId], references: [id])
+}
+
+model Gender {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  members Member[]
+}
+
+model MemberRole {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  members Member[]
+}
+
+model MemberStatus {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  members Member[]
+}
+
+model Member {
+  id                       Int                       @id @default(autoincrement())
+  memberCode               String                    @unique
+  fullName                 String
+  mobile                   String
+  email                    String?
+  dob                      DateTime?
+  genderId                 Int
+  aadhaarNumber            String?
+  panNumber                String?
+  address                  String?
+  city                     String?
+  state                    String?
+  pincode                  String?
+  bankName                 String?
+  accountNumber            String?
+  ifscCode                 String?
+  commissionPercent        Float?
+  branchId                 Int
+  memberRoleId             Int
+  statusId                 Int
+  referenceMemberId        String?
+  userId                   Int?                      @unique
+  createdByUserId          Int
+  createdAt                DateTime                  @default(now())
+  accountVerifications     AccountVerification[]
+  currentAccounts          CurrentAccount[]
+  fixedDepositAccounts     FixedDepositAccount[]
+  loanAccounts             LoanAccount[]
+  misAccounts              MISAccount[]
+  branch                   Branch                    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdBy                User                      @relation("MemberCreatedBy", fields: [createdByUserId], references: [id])
+  gender                   Gender                    @relation(fields: [genderId], references: [id])
+  memberRole               MemberRole                @relation(fields: [memberRoleId], references: [id])
+  referenceMember          Member?                   @relation("MemberReference", fields: [referenceMemberId], references: [memberCode])
+  referredMembers          Member[]                  @relation("MemberReference")
+  status                   MemberStatus              @relation(fields: [statusId], references: [id])
+  user                     User?                     @relation("UserMemberLogin", fields: [userId], references: [id])
+  recurringDepositAccounts RecurringDepositAccount[]
+  savingsAccounts          SavingsAccount[]
+}
+
+model AccountType {
+  id                   Int                   @id @default(autoincrement())
+  code                 String                @unique
+  name                 String
+  accountVerifications AccountVerification[]
+}
+
+model AccountStatus {
+  id                       Int                       @id @default(autoincrement())
+  name                     String                    @unique
+  currentAccounts          CurrentAccount[]
+  fixedDepositAccounts     FixedDepositAccount[]
+  loanAccounts             LoanAccount[]
+  misAccounts              MISAccount[]
+  recurringDepositAccounts RecurringDepositAccount[]
+  savingsAccounts          SavingsAccount[]
+}
+
+model AccountVerification {
+  id               Int         @id @default(autoincrement())
+  token            String      @unique
+  memberId         Int
+  branchId         Int
+  accountTypeId    Int
+  verifiedByUserId Int
+  verifiedAt       DateTime    @default(now())
+  expiresAt        DateTime
+  accountType      AccountType @relation(fields: [accountTypeId], references: [id])
+  branch           Branch      @relation(fields: [branchId], references: [id])
+  member           Member      @relation(fields: [memberId], references: [id])
+  verifiedBy       User        @relation(fields: [verifiedByUserId], references: [id])
+}
+
+model SavingsAccount {
+  id              Int           @id @default(autoincrement())
+  accountNumber   String        @unique
+  memberId        Int
+  branchId        Int
+  statusId        Int
+  balance         Float         @default(0)
+  nomineeName     String?
+  nomineeRelation String?
+  createdAt       DateTime      @default(now())
+  branch          Branch        @relation(fields: [branchId], references: [id])
+  member          Member        @relation(fields: [memberId], references: [id])
+  status          AccountStatus @relation(fields: [statusId], references: [id])
+  transactions    Transaction[]
+}
+
+model CurrentAccount {
+  id             Int           @id @default(autoincrement())
+  accountNumber  String        @unique
+  memberId       Int
+  branchId       Int
+  statusId       Int
+  balance        Float         @default(0)
+  overdraftLimit Float?
+  createdAt      DateTime      @default(now())
+  branch         Branch        @relation(fields: [branchId], references: [id])
+  member         Member        @relation(fields: [memberId], references: [id])
+  status         AccountStatus @relation(fields: [statusId], references: [id])
+  transactions   Transaction[]
+}
+
+model FixedDepositAccount {
+  id              Int           @id @default(autoincrement())
+  fdNumber        String        @unique
+  memberId        Int
+  branchId        Int
+  statusId        Int
+  principalAmount Float
+  interestRate    Float
+  tenureMonths    Int
+  maturityAmount  Float
+  maturityDate    DateTime
+  createdAt       DateTime      @default(now())
+  compoundingFreq String
+  interestEarned  Float
+  nomineeName     String?
+  nomineeRelation String?
+  branch          Branch        @relation(fields: [branchId], references: [id])
+  member          Member        @relation(fields: [memberId], references: [id])
+  status          AccountStatus @relation(fields: [statusId], references: [id])
+}
+
+model RecurringDepositAccount {
+  id              Int           @id @default(autoincrement())
+  rdNumber        String        @unique
+  memberId        Int
+  branchId        Int
+  statusId        Int
+  monthlyAmount   Float
+  tenureMonths    Int
+  interestRate    Float
+  maturityAmount  Float
+  createdAt       DateTime      @default(now())
+  interestEarned  Float
+  maturityDate    DateTime
+  nomineeName     String?
+  nomineeRelation String?
+  branch          Branch        @relation(fields: [branchId], references: [id])
+  member          Member        @relation(fields: [memberId], references: [id])
+  status          AccountStatus @relation(fields: [statusId], references: [id])
+  transactions    Transaction[]
+}
+
+model LoanAccount {
+  id                Int           @id @default(autoincrement())
+  loanNumber        String        @unique
+  memberId          Int
+  branchId          Int
+  statusId          Int
+  loanAmount        Float
+  interestRate      Float
+  tenureMonths      Int
+  emiAmount         Float
+  outstandingAmount Float
+  purpose           String?
+  createdAt         DateTime      @default(now())
+  totalInterest     Float
+  maturityDate      DateTime
+  branch            Branch        @relation(fields: [branchId], references: [id])
+  member            Member        @relation(fields: [memberId], references: [id])
+  status            AccountStatus @relation(fields: [statusId], references: [id])
+  transactions      Transaction[]
+}
+
+model MISAccount {
+  id               Int           @id @default(autoincrement())
+  misNumber        String        @unique
+  memberId         Int
+  branchId         Int
+  statusId         Int
+  investmentAmount Float
+  interestRate     Float
+  monthlyPayout    Float
+  tenureMonths     Int
+  createdAt        DateTime      @default(now())
+  maturityAmount   Float
+  maturityDate     DateTime
+  totalInterest    Float
+  nomineeName      String?
+  nomineeRelation  String?
+  branch           Branch        @relation(fields: [branchId], references: [id])
+  member           Member        @relation(fields: [memberId], references: [id])
+  status           AccountStatus @relation(fields: [statusId], references: [id])
+  transactions     Transaction[]
+}
+
+model TransactionType {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  transactions Transaction[]
+}
+
+model Transaction {
+  id                Int                      @id @default(autoincrement())
+  amount            Float
+  transactionDate   DateTime                 @default(now())
+  transactionTypeId Int
+  savingsAccountId  Int?
+  currentAccountId  Int?
+  rdAccountId       Int?
+  loanAccountId     Int?
+  misAccountId      Int?
+  currentAccount    CurrentAccount?          @relation(fields: [currentAccountId], references: [id])
+  loanAccount       LoanAccount?             @relation(fields: [loanAccountId], references: [id])
+  misAccount        MISAccount?              @relation(fields: [misAccountId], references: [id])
+  rdAccount         RecurringDepositAccount? @relation(fields: [rdAccountId], references: [id])
+  savingsAccount    SavingsAccount?          @relation(fields: [savingsAccountId], references: [id])
+  transactionType   TransactionType          @relation(fields: [transactionTypeId], references: [id])
+}
+model Zone {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  branches Branch[]
+}
+model UserBranch {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  branchId Int
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, branchId])
+}
+
+model playing_with_neon {
+  id    Int    @id @default(autoincrement())
+  name  String
+  value Float? @db.Real
+}
