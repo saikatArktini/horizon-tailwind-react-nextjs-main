@@ -2,6 +2,9 @@
 
 A powerful, modern, and comprehensive Core Banking and Microfinance Management System built with **Next.js 15**, **React 19**, and **Tailwind CSS**. This platform provides a robust solution for managing branches, members, and a wide array of financial products with a premium user interface.
 
+**🌐 Live Demo:** [https://horizon-tailwind-react-nextjs-main-theta.vercel.app/](https://horizon-tailwind-react-nextjs-main-theta.vercel.app/)
+
+
 [![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/horizon-ui/horizon-tailwind-react-nextjs)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
@@ -98,6 +101,19 @@ Horizon UI Banking System is designed for financial institutions and microfinanc
    ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the application.
+
+---
+
+## 🔑 Test Credentials
+
+For quick exploration of the platform **(both locally and on the live demo)**, you can use the following Super-Admin credentials:
+
+- **Username**: `superadmin1`
+- **Password**: `1234`
+
+> [!IMPORTANT]
+> These credentials provide full access to all banking modules. Please use them responsibly in the test environment.
+
 
 ---
 
