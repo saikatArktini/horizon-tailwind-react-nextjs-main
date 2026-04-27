@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "typeRoots": ["node_modules/@types", "src/types"],
-    "target": "es2016",
+    "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext", "es2015.iterable"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -31,7 +31,7 @@
     ],
     "strict": false
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "node_modules/.prisma"],
   "include": [
     "./src",
     "next-env.d.ts",
